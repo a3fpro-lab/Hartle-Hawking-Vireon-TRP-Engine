@@ -1,3 +1,7 @@
+![CI](https://github.com/<A3FPro-lab>/HHV-TRP-Engine/actions/workflows/ci.yml/badge.svg)
+
+# HHV–TRP Engine
+
 # HHV–TRP Engine
 
 Hartle–Hawking–Vireon (HHV) TRP engine: a derivation-based framework that adds a **Total Recursive Processing (TRP)** selection factor on top of standard Hartle–Hawking–style exit geometries, calibrated to **Planck + BICEP/Keck** constraints on inflation and statistical isotropy.
