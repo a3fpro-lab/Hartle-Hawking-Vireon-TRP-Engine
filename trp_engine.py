@@ -5,7 +5,7 @@ Hartle–Hawking–Vireon TRP engine.
 
 Implements the TRP ansatz
 
-  T(Ne, HI, eps) = R(Ne, HI) * exp( - mu * C(eps) )
+  T(Ne, HI, eps) = R(Ne, HI) * P(eps)
 
 with
 
@@ -13,6 +13,7 @@ with
   S_geom      = A(Ne,HI) / 4          (Planck units, 4 G hbar = 1)
   A(Ne,HI)    = k_A * exp(2 Ne) / HI**2
   C(eps)      = eps**2 / (2 sigma**2)
+  P(eps)      = exp( - mu * C(eps) )
 
 and a viability condition T >= T_min.
 
@@ -101,7 +102,7 @@ class TRPEngine:
         Sg = self.S_geom(Ne, HI)
         return np.log(Sg / self.S0)
 
-    # ---- curvature-complexity and TRP ----
+    # ---- curvature-complexity and perception ----
 
     def C(self, eps):
         """
@@ -112,21 +113,47 @@ class TRPEngine:
         eps = np.asarray(eps, dtype=float)
         return (eps ** 2) / (2.0 * self.sigma ** 2)
 
+    def P(self, eps):
+        """
+        Perception gain:
+
+          P(eps) = exp( - mu * C(eps) ).
+        """
+        Cval = self.C(eps)
+        return np.exp(-self.mu * Cval)
+
+    # ---- TRP and viability ----
+
     def T(self, Ne, HI, eps):
         """
         Total recursive processing capacity:
 
-          T(Ne,HI,eps) = R(Ne,HI) * exp( - mu * C(eps) ).
+          T(Ne,HI,eps) = R(Ne,HI) * P(eps).
         """
         Rval = self.R(Ne, HI)
-        Cval = self.C(eps)
-        return Rval * np.exp(-self.mu * Cval)
+        Pval = self.P(eps)
+        return Rval * Pval
 
     def is_viable(self, Ne, HI, eps):
         """
         Return a boolean mask of T >= T_min.
         """
         return self.T(Ne, HI, eps) >= self.T_min
+
+    def decompose_T(self, Ne, HI, eps):
+        """
+        Decompose T into (R, P, T) at given (Ne, HI, eps):
+
+          R = R(Ne,HI),
+          P = exp(-mu * C(eps)),
+          T = R * P.
+
+        This makes the "rotation" between T, R, and P explicit.
+        """
+        Rval = self.R(Ne, HI)
+        Pval = self.P(eps)
+        Tval = Rval * Pval
+        return Rval, Pval, Tval
 
     # ---- calibration and epsilon_max ----
 
