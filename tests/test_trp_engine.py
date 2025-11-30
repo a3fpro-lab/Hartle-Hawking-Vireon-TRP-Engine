@@ -15,6 +15,14 @@ These tests verify:
    For eps >> eps_star at the pivot, T falls below T_min.
 """
 
+import os
+import sys
+
+# Ensure project root is on sys.path so 'hhv_math' and 'trp_engine' can be imported
+ROOT = os.path.dirname(os.path.dirname(__file__))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 import numpy as np
 
 from hhv_math import inflation, cmb_params
