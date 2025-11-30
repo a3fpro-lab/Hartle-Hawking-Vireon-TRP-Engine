@@ -375,3 +375,122 @@ print("|eps|_max at pivot:", eps_max_star)
 # Example variation: lower H_I at same N_e
 for HI in [1.8e-5, 1.0e-5, 5.0e-6]:
     print(HI, engine.epsilon_max(60.0, HI))
+
+## 8. References and source-backed formulas
+
+This section lists the main external physics results used in this repo,
+so every numerical input or standard relation is traceable to the
+literature.
+
+### 8.1 Slow-roll relations for r, A_s, H_I
+
+We use the standard single-field slow-roll relations in Planck units
+(\(M_{\rm Pl}=1\)):
+
+- Tensor power:
+  \[
+  P_t = \frac{2 H_I^2}{\pi^2}.
+  \]
+- Scalar power at CMB pivot:
+  \[
+  P_s = A_s \simeq 2.1\times 10^{-9}.
+  \]
+- Tensor-to-scalar ratio:
+  \[
+  r = \frac{P_t}{P_s} = \frac{2 H_I^2}{\pi^2 A_s}
+  \quad\Rightarrow\quad
+  H_I = \frac{\pi}{\sqrt{2}}\sqrt{r A_s}.
+  \]
+
+These formulas appear in standard cosmology texts and in CMB review
+papers (e.g. the Planck 2018 cosmological parameters and inflation
+papers).
+
+### 8.2 Observational inputs (example values)
+
+1. **Scalar amplitude \(A_s\)**  
+   From Planck 2018 base-\(\Lambda\)CDM fit:
+   \[
+   A_s \simeq 2.1\times 10^{-9}
+   \]
+   at pivot \(k = 0.05\,\mathrm{Mpc}^{-1}\).
+
+2. **Tensor-to-scalar ratio \(r\)**  
+   Combined Planck + BICEP/Keck analyses give upper bounds of order
+   \[
+   r \lesssim 0.03\quad\text{(95\% C.L., pivot \(k\sim 0.005\,\mathrm{Mpc}^{-1}\))}.
+   \]
+   We use \(r_\star = 0.03\) as a conservative high-scale pivot.
+
+3. **Statistical isotropy (quadrupolar anisotropy)**  
+   Planck statistical isotropy analyses constrain quadrupolar
+   power-anisotropy parameters (often denoted \(g_\*\)) to
+   \(|g_\*| \lesssim \mathcal{O}(10^{-2})\) at CMB scales, depending on
+   the exact model. We therefore choose
+   \[
+   |\epsilon_\star| = 0.02
+   \]
+   as a conservative upper bound for a dimensionless anisotropy
+   parameter comparable in magnitude to \(g_\*\).
+
+These numbers are used **only** as calibration inputs; all code is
+explicit about where they enter.
+
+### 8.3 TRP ansatz and derived formulas
+
+The TRP structure
+\[
+T(N_e,H_I,\epsilon)
+= \log\!\left(\frac{S_{\rm geom}(N_e,H_I)}{S_0}\right)
+  \exp\!\left(-\mu\,\frac{\epsilon^2}{2\sigma^2}\right)
+\]
+and the curvature-complexity ansatz
+\[
+C(\epsilon) = \frac{\epsilon^2}{2\sigma^2}
+\]
+are **model assumptions**.
+
+Given these definitions and the TRP viability condition \(T\ge T_{\min}\),
+we derive:
+
+- Reality bandwidth:
+  \[
+  R(N_e,H_I)=\log\!\left(\frac{S_{\rm geom}}{S_0}\right)
+            =\log\!\left(\frac{A(N_e,H_I)}{4S_0}\right).
+  \]
+- Complexity bound:
+  \[
+  C_{\max}(N_e,H_I)
+  = \frac{1}{\mu}\log\!\left(\frac{R(N_e,H_I)}{T_{\min}}\right),
+  \quad R > T_{\min}.
+  \]
+- Maximal anisotropy:
+  \[
+  |\epsilon|_{\max}(N_e,H_I)
+  = \sigma \sqrt{2 C_{\max}(N_e,H_I)}.
+  \]
+
+The Python implementation in `trp_engine.py` is a direct translation of
+these formulas.
+
+### 8.4 Calibration of μ to data
+
+At a chosen pivot \((N_{e,\star},H_{I,\star},\epsilon_\star)\) consistent
+with CMB constraints, we impose TRP saturation:
+\[
+T(N_{e,\star},H_{I,\star},\epsilon_\star) = T_{\min}.
+\]
+
+Writing
+\[
+R_\star = R(N_{e,\star},H_{I,\star}),\quad
+C_\star = C(\epsilon_\star),
+\]
+this is
+\[
+R_\star \exp(-\mu C_\star) = T_{\min}
+\quad\Rightarrow\quad
+\mu = \frac{1}{C_\star}\log\!\left(\frac{R_\star}{T_{\min}}\right).
+\]
+
+This is exactly what `TRPEngine._calibrate_mu()` computes.
