@@ -1,4 +1,37 @@
+![CI](https://github.com/a3fpro-lab/HHV-TRP-Engine/actions/workflows/ci.yml/badge.svg)
 
+# Hartle–Hawking–Vireon TRP Engine
+
+Planck-calibrated **Total Recursive Processing (TRP)** selection factor
+for the Hartle–Hawking no-boundary wavefunction.
+
+This repo provides:
+
+- A small, explicit Python class `TRPEngine` implementing
+  \[
+  T(N_e,H_I,\epsilon) = R(N_e,H_I)\,\exp\big(-\mu\,C(\epsilon)\big),
+  \]
+  with
+  \[
+  R = \log\!\frac{S_{\rm geom}}{S_0},\quad
+  S_{\rm geom} = \frac{A(N_e,H_I)}{4},\quad
+  A = k_A\,\frac{e^{2N_e}}{H_I^2},\quad
+  C(\epsilon) = \frac{\epsilon^2}{2\sigma^2}.
+  \]
+- Calibration of \(\mu\) at a Planck-like pivot
+  \((N_e^\*, H_I^\*, \epsilon^\*)\) consistent with CMB constraints.
+- Utilities in `hhv_math/` for standard slow-roll relations
+  \((H_I, r, A_s, V^{1/4})\) and Planck 2018–style parameter values.
+- Examples (`examples/`) that:
+  - derive \(H_I\) and \(V^{1/4}\) from \(A_s\) and \(r\),
+  - compute \(|\epsilon|_{\max}(N_e,H_I)\),
+  - export a CSV grid over the \((N_e,H_I)\) plane.
+- Tests (`pytest`) + GitHub Actions CI to guarantee reproducibility.
+
+The goal is not new microphysics, but a clean, test-backed bridge:
+given any anisotropic Hartle–Hawking calculation, you can plug its
+geometry into this TRP engine and obtain a transparent bound on the
+maximal allowed anisotropy \(|\epsilon|_{\max}(N_e,H_I)\).
 
 
 # HHV–TRP Engine
