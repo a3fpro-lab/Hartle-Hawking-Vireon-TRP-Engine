@@ -531,3 +531,18 @@ To run the tests locally:
 ```bash
 pip install pytest
 pytest
+
+3. Commit message: `Document tests`.
+4. Commit.
+
+---
+
+## Step 3 – How you (or anyone) runs the tests later
+
+On a machine with Python:
+
+```bash
+git clone https://github.com/<your-username>/HHV-TRP-Engine.git
+cd HHV-TRP-Engine
+pip install -r requirements.txt pytest
+pytest
