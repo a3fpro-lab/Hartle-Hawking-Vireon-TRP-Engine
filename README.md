@@ -350,3 +350,28 @@ The only required runtime dependency is `numpy`. For plotting (if you extend the
 
 ```bash
 pip install numpy
+
+### 6.2 Minimal example
+
+```python
+from trp_engine import TRPEngine
+
+engine = TRPEngine(
+    S0=1e5,
+    T_min=3.0,
+    k_A=1e3,
+    sigma=1.0,
+    Ne_star=60.0,
+    HI_star=1.8e-5,  # from r ~ 0.03, A_s ~ 2.1e-9
+    eps_star=0.02    # calibrated to Planck-like anisotropy bound
+)
+
+print("Calibrated mu:", engine.mu)
+
+# Pivot check: should return ~0.02
+eps_max_star = engine.epsilon_max(60.0, 1.8e-5)
+print("|eps|_max at pivot:", eps_max_star)
+
+# Example variation: lower H_I at same N_e
+for HI in [1.8e-5, 1.0e-5, 5.0e-6]:
+    print(HI, engine.epsilon_max(60.0, HI))
